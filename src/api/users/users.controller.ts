@@ -1,19 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { User } from '../../entities/users/user.entity';
 import { UsersService } from './users.service';
-import { Public } from 'src/decorators/public.decorator';
-import {
-  UserProfileSchema,
-  CreateUserSchema,
-  UserInDbSchema,
-} from 'src/schemas/users/users.schemas';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  ApiOAuth2,
-} from '@nestjs/swagger';
+import { UserProfileSchema } from 'src/schemas/users/users.schemas';
+import { ApiOperation, ApiResponse, ApiTags, ApiOAuth2 } from '@nestjs/swagger';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiOAuth2([], 'Authentication')
 @ApiTags('Users')
@@ -91,5 +89,20 @@ export class UsersController {
   })
   remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: User,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input',
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 }

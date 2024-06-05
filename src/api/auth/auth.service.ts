@@ -22,13 +22,14 @@ export class AuthService {
   ) {}
 
   async register(createUserIn: CreateUserSchema): Promise<User> {
-    const { email, firstName, lastName, password } = createUserIn;
+    const { email, firstName, lastName, userType, password } = createUserIn;
     const hashedPassword = hashPassword(password);
 
     const user = await this.usersRepository.save({
       email,
       firstName,
       lastName,
+      userType,
       password: hashedPassword,
     });
 

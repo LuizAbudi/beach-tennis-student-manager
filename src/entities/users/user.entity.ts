@@ -1,7 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum } from 'class-validator';
 
-// This defines how a user should be stored in the database
+export enum UserType {
+  STUDENT = 'student',
+  TEACHER = 'teacher',
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -22,4 +27,9 @@ export class User {
   @ApiProperty({ example: 'string', description: 'Password' })
   @Column({ nullable: false, select: false })
   password: string;
+
+  @ApiProperty({ example: 'student', description: 'Teacher or Student' })
+  @Column({ type: 'enum', enum: UserType, nullable: false })
+  @IsEnum(UserType, { message: 'userType must be either student or teacher' })
+  userType: UserType;
 }

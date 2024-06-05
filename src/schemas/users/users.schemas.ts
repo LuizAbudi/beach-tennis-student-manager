@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail } from 'class-validator';
+import { IsString, IsEmail, IsEnum } from 'class-validator';
+import { UserType } from 'src/entities/users/user.entity';
 
 // schema that is used when a user is pulled from the database
 export class UserProfileSchema {
@@ -14,6 +15,10 @@ export class UserProfileSchema {
 
   @ApiProperty({ example: 'Doe', description: 'Last name' })
   lastName: string;
+
+  @ApiProperty({ example: 'student', description: 'Student' })
+  @IsEnum(UserType)
+  userType: UserType;
 }
 
 // schema that is used when a user signs in
@@ -52,6 +57,10 @@ export class UserInDbSchema {
   @ApiProperty({ example: 'Doe', description: 'Last name' })
   lastName: string;
 
+  @ApiProperty({ example: 'student', description: 'Student' })
+  @IsEnum(UserType)
+  userType: UserType;
+
   @ApiProperty({ example: 'string', description: 'Password' })
   password: string;
 }
@@ -59,14 +68,22 @@ export class UserInDbSchema {
 // Schema that is used to create a user
 export class CreateUserSchema {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
+  @IsEmail()
   email: string;
 
   @ApiProperty({ example: 'John', description: 'First name' })
+  @IsString()
   firstName: string;
 
   @ApiProperty({ example: 'Doe', description: 'Last name' })
+  @IsString()
   lastName: string;
 
+  @ApiProperty({ example: 'student', description: 'Student' })
+  @IsEnum(UserType)
+  userType: UserType;
+
   @ApiProperty({ example: 'string', description: 'Password' })
+  @IsString()
   password: string;
 }
