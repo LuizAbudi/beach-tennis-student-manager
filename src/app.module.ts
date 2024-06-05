@@ -6,7 +6,6 @@ import { AuthModule } from './api/auth/auth.module';
 import { UsersModule } from './api/users/users.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/users/user.entity';
 
 import configuration from 'config/configuration';
 
@@ -23,7 +22,7 @@ import configuration from 'config/configuration';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         ...configService.get('database'),
-        entities: [User],
+        autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],

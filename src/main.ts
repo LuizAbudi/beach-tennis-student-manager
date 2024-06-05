@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -7,10 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
 
-  // configures SwaggerUI
+  // Configurações do Swagger
   const config = new DocumentBuilder()
-    .setTitle('Fantasy Football Insights API')
-    .setDescription('The Fantasy Football Insights API')
+    .setTitle('Beach Tennis Student Management API')
+    .setDescription('API para gerenciar alunos de beach tennis')
     .setVersion('1.0')
     .addOAuth2(
       {
@@ -32,18 +33,29 @@ async function bootstrap() {
       persistAuthorization: true,
       initOAuth: {
         clientSecret: 'secretKey',
-        appName: 'Fantasy Football Insights API',
+        appName: 'Beach Tennis Student Management API',
       },
     },
   });
 
-  // get PORT from config
+  // Adicionar ValidationPipe globalmente
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      errorHttpStatusCode: 422,
+    }),
+  );
+
+  // Configuração do serviço de configuração
   const configService = app.get(ConfigService);
   const PORT = configService.get<number>('PORT');
 
-  // start application
+  // Iniciar aplicação
   await app.listen(PORT);
   console.log(`Application is running on: http://localhost:${PORT}`);
   console.log(`View the API Documentation at: http://localhost:${PORT}/docs`);
 }
+
 bootstrap();
