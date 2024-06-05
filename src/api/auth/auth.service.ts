@@ -2,15 +2,15 @@ import {
   Injectable,
   UnauthorizedException,
   NotFoundException,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { UsersService } from "src/api/users/users.service";
-import { JwtService } from "@nestjs/jwt";
-import { comparePassword } from "src/core/security";
-import { User } from "src/entities/users/user.entity";
-import { CreateUserSchema } from "src/schemas/users/users.schemas";
-import { hashPassword } from "src/core/security";
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UsersService } from 'src/api/users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { comparePassword } from 'src/core/security';
+import { User } from 'src/entities/users/user.entity';
+import { CreateUserSchema } from 'src/schemas/users/users.schemas';
+import { hashPassword } from 'src/core/security';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async register(createUserIn: CreateUserSchema): Promise<User> {

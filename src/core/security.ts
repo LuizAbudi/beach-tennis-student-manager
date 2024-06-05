@@ -1,4 +1,4 @@
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 
 // Encrypts password to be stored in db
 export const hashPassword = (password: string): string => {
@@ -9,7 +9,7 @@ export const hashPassword = (password: string): string => {
 // Compares password with stored hashed password to check if password is correct
 export const comparePassword = (
   password: string,
-  hashedPassword: string
+  hashedPassword: string,
 ): boolean => {
   return bcrypt.compareSync(password, hashedPassword);
 };

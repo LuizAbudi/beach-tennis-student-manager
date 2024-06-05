@@ -1,14 +1,14 @@
-import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { AuthModule } from "./api/auth/auth.module";
-import { UsersModule } from "./api/users/users.module";
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './api/auth/auth.module';
+import { UsersModule } from './api/users/users.module';
 
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./entities/users/user.entity";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/users/user.entity';
 
-import configuration from "config/configuration";
+import configuration from 'config/configuration';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import configuration from "config/configuration";
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        ...configService.get("database"),
+        ...configService.get('database'),
         entities: [User],
         synchronize: true,
       }),

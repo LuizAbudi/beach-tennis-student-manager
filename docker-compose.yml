@@ -1,20 +1,28 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  mysqldb:
-    image: mysql:8.0
-    container_name: studentsmanagermysql
-    restart: unless-stopped
-    env_file: ./.env
-    environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_PASSWORD
-      - MYSQL_DATABASE=$MYSQL_DB_NAME
-      - MYSQL_TCP_PORT=$MYSQL_DOCKER_PORT
+  backend:
+    image: your_backend_image_name:tag
     ports:
-      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
-    expose:
-      - $MYSQL_DOCKER_PORT
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 5s
-      retries: 10
+      - "${PORT}:3000"
+    environment:
+      - JWT_SECRET=secretKey
+      - PORT=${PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+    depends_on:
+      - database
+
+  database:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "${DATABASE_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
