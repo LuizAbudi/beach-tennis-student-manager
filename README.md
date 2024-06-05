@@ -1,61 +1,78 @@
-## Description
+# Beach Tennis Student Management API
 
-Nest framework TypeScript Template.
+API para gerenciamento de alunos de beach tennis.
 
-## Installation
+## Descrição
 
-```bash
-$ npm install
-```
+Este projeto é uma API RESTful desenvolvida com [NestJS](https://nestjs.com/) e [TypeORM](https://typeorm.io/) para gerenciar alunos de beach tennis. Ele fornece endpoints para criar, atualizar, visualizar e excluir informações de alunos, bem como autenticação de usuário.
 
-## Development Database
+## Como iniciar o projeto
 
-Database connection is setup to use environment variables in a `.env` file.
-The Database connection is setup to use `MySQL` with `typeorm` packages.
-A `.env.example` is provided that uses database and initial data variables for the following setup:
-Development database creation using `template` with user `template` at `localhost:3306`:
+### Pré-requisitos
 
-> **Note:** Please make sure you have installed mysql and have configured your environment to use it.
+- [Node.js](https://nodejs.org/) (v14.x ou superior)
+- [Yarn](https://yarnpkg.com/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
-```sql
-CREATE DATABASE template;
-```
+### Instalação
 
-```sql
-CREATE USER 'CREATE DATABASE template'@'localhost' IDENTIFIED BY 'CREATE DATABASE template';
-```
-
-```sql
-GRANT ALL PRIVILEGES ON *.* TO 'template'@'localhost' WITH GRANT OPTION;
-```
-
-## Running the app
+1. Clone este repositório:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/seu-usuario/nome-do-repositorio.git
 ```
 
-## Test
+2. Navegue até o diretório do projeto:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cd nome-do-repositorio
 ```
 
-## Docs
+3. Instale as dependências:
 
-- [Nest](https://docs.nestjs.com/) - Documentation for Nest framework.
-- [MySQL](https://www.mysql.com/products/community/) - Documentation for MySQL Community Server.
+```bash
+yarn install
+```
+
+### Configuração do banco de dados
+
+Este projeto utiliza o Docker Compose para criar um contêiner do MySQL. Certifique-se de que o Docker esteja em execução e execute o seguinte comando:
+
+```bash
+docker-compose up -d
+```
+
+### Execução do projeto
+
+Após a configuração do banco de dados, você pode iniciar o servidor de desenvolvimento com o seguinte comando:
+
+```bash
+yarn start
+```
+
+Isso iniciará o servidor na porta padrão 3000.
+
+### Documentação da API
+
+Você pode acessar a documentação da API no endpoint `/docs` após iniciar o servidor. Por exemplo:
+
+[http://localhost:3000/docs](http://localhost:3000/docs)
+
+## Funcionalidades Principais
+
+- **Autenticação de Usuário**: O usuário pode se autenticar na API para acessar recursos protegidos.
+- **Gerenciamento de Alunos**: CRUD completo para gerenciar informações de alunos de beach tennis.
+- **Documentação Swagger**: Documentação interativa da API disponível em `/docs`.
+
+## Contribuindo
+
+Contribuições são bem-vindas! Por favor, abra uma issue ou envie um pull request para discutir as alterações que você gostaria de fazer.
+
+## Licença
+
+Este projeto é licenciado sob a [MIT License](LICENSE).
+
+---
+
+Sinta-se à vontade para personalizar este README.md de acordo com as necessidades específicas do seu projeto.
