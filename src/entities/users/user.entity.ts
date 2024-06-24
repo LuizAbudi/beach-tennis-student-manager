@@ -8,11 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
 import { Teacher } from '../teachers/teacher.entity';
-
-export enum UserType {
-  STUDENT = 'student',
-  TEACHER = 'teacher',
-}
+import { UserType } from 'src/api/users/enums';
 
 @Entity()
 export class User {

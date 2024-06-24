@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, UserType } from '../../entities/users/user.entity';
+import { User } from '../../entities/users/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { TeachersService } from '../teachers/teachers.service';
+import { UserType } from './enums';
 
 @Injectable()
 export class UsersService {
