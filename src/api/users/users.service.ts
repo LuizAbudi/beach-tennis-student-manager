@@ -1,14 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../entities/users/user.entity';
+import { User, UserType } from '../../entities/users/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Teacher } from 'src/entities/teachers/teacher.entity';
+import { TeachersService } from '../teachers/teachers.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @Inject(forwardRef(() => TeachersService))
+    private readonly teachersService: TeachersService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -32,9 +41,33 @@ export class UsersService {
     return user;
   }
 
+  async findAllStudents(): Promise<User[]> {
+    return this.usersRepository.find({ where: { userType: UserType.STUDENT } });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user);
+    const { email, firstName, lastName, userType, password } = createUserDto;
+
+    const newUser = new User();
+    newUser.email = email;
+    newUser.firstName = firstName;
+    newUser.lastName = lastName;
+    newUser.userType = userType;
+    newUser.password = password;
+
+    const savedUser = await this.usersRepository.save(newUser);
+
+    if (savedUser.userType === UserType.TEACHER) {
+      const teacher = new Teacher();
+      teacher.email = email;
+      teacher.firstName = firstName;
+      teacher.lastName = lastName;
+      teacher.password = password;
+      teacher.user = savedUser;
+      await this.teachersService.create(teacher);
+    }
+
+    return savedUser;
   }
 
   async remove(id: string): Promise<void> {

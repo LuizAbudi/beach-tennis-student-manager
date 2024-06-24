@@ -15,7 +15,10 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Teacher or Student' })
+  @ApiProperty({
+    example: 'student',
+    description: 'User type: student or teacher',
+  })
   @IsEnum(UserType, {
     message: 'userType must be either student or teacher',
   })
