@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { UserProfileSchema } from 'src/schemas/users/users.schemas';
 import { ApiOperation, ApiResponse, ApiTags, ApiOAuth2 } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiOAuth2([], 'Authentication')
 @ApiTags('Users')
@@ -91,6 +92,7 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({
