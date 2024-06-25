@@ -9,6 +9,7 @@ import { TeachersModule } from './api/teachers/teachers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import configuration from 'config/configuration';
+import { StudentsModule } from './api/students/students.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import configuration from 'config/configuration';
     AuthModule,
     UsersModule,
     TeachersModule,
+    StudentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

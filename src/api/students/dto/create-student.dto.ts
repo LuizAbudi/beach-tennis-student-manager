@@ -1,9 +1,8 @@
-// dto/create-user.dto.ts
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsEmail, IsEnum, IsOptional, IsInt } from 'class-validator';
-import { UserType } from '../enums';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsEmail, IsEnum } from 'class-validator';
+import { UserType } from 'src/api/users/enums';
 
-export class CreateUserDto {
+export class CreateStudentDto {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   @IsEmail()
   email: string;
@@ -16,7 +15,10 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Teacher or Student' })
+  @ApiProperty({
+    example: 'student',
+    description: 'User type: student or teacher',
+  })
   @IsEnum(UserType, {
     message: 'userType must be either student or teacher',
   })
@@ -25,12 +27,4 @@ export class CreateUserDto {
   @ApiProperty({ example: 'password', description: 'Password' })
   @IsString()
   password: string;
-
-  @ApiPropertyOptional({
-    example: 1,
-    description: 'Teacher ID (required if userType is student)',
-  })
-  @IsOptional()
-  @IsInt()
-  teacherId?: number;
 }
