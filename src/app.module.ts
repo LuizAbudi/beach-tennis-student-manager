@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './api/auth/auth.module';
 import { UsersModule } from './api/users/users.module';
+import { TeachersModule } from './api/teachers/teachers.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -31,6 +32,7 @@ import configuration from 'config/configuration';
     // Import modules
     AuthModule,
     UsersModule,
+    TeachersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

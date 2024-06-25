@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsEnum } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { UserType } from 'src/api/users/enums';
 
 // schema that is used when a user is pulled from the database
-export class UserProfileSchema {
+export class TeacherProfileSchema {
   @ApiProperty({ example: 1, description: 'User id' })
   id: number;
 
@@ -16,13 +16,13 @@ export class UserProfileSchema {
   @ApiProperty({ example: 'Doe', description: 'Last name' })
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Student' })
+  @ApiProperty({ example: 'teacher', description: 'Teacher' })
   @IsEnum(UserType)
   userType: UserType;
 }
 
 // schema that is used when a user signs in
-export class UserSignInSchema {
+export class TeacherSignInSchema {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   @IsEmail()
   readonly email: string;
@@ -44,7 +44,7 @@ export class Oauth2SignInSchema {
 }
 
 // schema that is used when a user is pulled from the database
-export class UserInDbSchema {
+export class TeacherInDbSchema {
   @ApiProperty({ example: 1, description: 'User id' })
   id: number;
 
@@ -57,7 +57,7 @@ export class UserInDbSchema {
   @ApiProperty({ example: 'Doe', description: 'Last name' })
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Student' })
+  @ApiProperty({ example: 'teacher', description: 'Teacher' })
   @IsEnum(UserType)
   userType: UserType;
 
@@ -66,7 +66,7 @@ export class UserInDbSchema {
 }
 
 // Schema that is used to create a user
-export class CreateUserSchema {
+export class CreateTeacherSchema {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   @IsEmail()
   email: string;
@@ -78,10 +78,6 @@ export class CreateUserSchema {
   @ApiProperty({ example: 'Doe', description: 'Last name' })
   @IsString()
   lastName: string;
-
-  @ApiProperty({ example: 'student', description: 'Student' })
-  @IsEnum(UserType)
-  userType: UserType;
 
   @ApiProperty({ example: 'string', description: 'Password' })
   @IsString()

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsEnum } from 'class-validator';
-import { UserType } from '../enums';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { UserType } from 'src/api/users/enums';
 
-export class CreateUserDto {
+export class CreateTeacherDto {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   @IsEmail()
   email: string;
@@ -15,10 +15,7 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({
-    example: 'student',
-    description: 'User type: student or teacher',
-  })
+  @ApiProperty({ example: 'student', description: 'Teacher or Student' })
   @IsEnum(UserType, {
     message: 'userType must be either student or teacher',
   })
