@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { TeachersService } from '../teachers/teachers.service';
 import { UserType } from './enums';
+import { hashPassword } from 'src/core/security';
 
 @Injectable()
 export class UsersService {
@@ -48,13 +49,14 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email, firstName, lastName, userType, password } = createUserDto;
+    const hashedPassword = hashPassword(password);
 
     const newUser = new User();
     newUser.email = email;
     newUser.firstName = firstName;
     newUser.lastName = lastName;
     newUser.userType = userType;
-    newUser.password = password;
+    newUser.password = hashedPassword;
 
     const savedUser = await this.usersRepository.save(newUser);
 
@@ -63,7 +65,7 @@ export class UsersService {
       teacher.email = email;
       teacher.firstName = firstName;
       teacher.lastName = lastName;
-      teacher.password = password;
+      teacher.password = hashedPassword;
       teacher.user = savedUser;
       await this.teachersService.create(teacher);
     }
