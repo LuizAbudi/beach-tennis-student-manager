@@ -28,4 +28,8 @@ export class User {
   @Column({ type: 'enum', enum: UserType, nullable: false })
   @IsEnum(UserType, { message: 'userType must be either student or teacher' })
   userType: UserType;
+
+  @ApiProperty({ example: true, description: 'Status' })
+  @Column({ default: true })
+  status: boolean;
 }

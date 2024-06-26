@@ -1,7 +1,16 @@
-import { Controller, Delete, Get, Param, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Request,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserProfileSchema } from 'src/schemas/users/users.schemas';
 import { ApiOperation, ApiResponse, ApiTags, ApiOAuth2 } from '@nestjs/swagger';
+import { UpdateStatusDto } from './dto/update-user.dto';
 
 @ApiOAuth2([], 'Authentication')
 @ApiTags('Users')
@@ -77,22 +86,30 @@ export class UsersController {
     status: 401,
     description: 'Access Forbidden',
   })
-  remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: number): Promise<void> {
     return this.usersService.remove(id);
   }
 
-  // @Post()
-  // @ApiOperation({ summary: 'Create user' })
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'User created successfully',
-  //   type: User,
-  // })
-  // @ApiResponse({
-  //   status: 400,
-  //   description: 'Invalid input',
-  // })
-  // create(@Body() createUserDto: CreateUserDto): Promise<User> {
-  //   return this.usersService.create(createUserDto);
-  // }
+  @Put('update-status')
+  @ApiOperation({ summary: 'Update User Status' })
+  @ApiResponse({
+    status: 200,
+    description: 'User Status Updated',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Access Forbidden',
+  })
+  updateStatus(
+    @Body() updateStatusDto: UpdateStatusDto,
+  ): Promise<{ message: string }> {
+    return this.usersService.updateStatus(
+      updateStatusDto.id,
+      updateStatusDto.status,
+    );
+  }
 }

@@ -36,7 +36,20 @@ export class UsersService {
     return this.usersRepository.find({ where: { userType: UserType.STUDENT } });
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  async updateStatus(
+    id: number,
+    status: boolean,
+  ): Promise<{ message: string }> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    user.status = status;
+    await this.usersRepository.save(user);
+    return { message: `User with id ${id} status updated successfully` };
   }
 }

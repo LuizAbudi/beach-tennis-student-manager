@@ -28,9 +28,9 @@ export class CreateUserDto {
 
   @ApiPropertyOptional({
     example: 1,
-    description: 'Teacher ID (required if userType is student)',
+    description: 'Status',
   })
-  @IsOptional()
   @IsInt()
-  teacherId?: number;
+  @IsOptional()
+  status?: boolean;
 }
