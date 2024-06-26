@@ -1,4 +1,4 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { Repository } from 'typeorm';
@@ -20,5 +20,13 @@ export class TeachersService {
 
   async create(teacher: Teacher): Promise<Teacher> {
     return this.teachersRepository.save(teacher);
+  }
+
+  async findById(id: number): Promise<Teacher> {
+    const teacher = await this.teachersRepository.findOne({ where: { id } });
+    if (!teacher) {
+      throw new NotFoundException(`Teacher with id ${id} not found`);
+    }
+    return teacher;
   }
 }

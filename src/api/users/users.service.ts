@@ -3,6 +3,7 @@ import {
   NotFoundException,
   forwardRef,
   Inject,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,6 +13,8 @@ import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { TeachersService } from '../teachers/teachers.service';
 import { UserType } from './enums';
 import { hashPassword } from 'src/core/security';
+import { Student } from 'src/entities/students/student.entity';
+import { StudentsService } from '../students/students.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +23,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @Inject(forwardRef(() => TeachersService))
     private readonly teachersService: TeachersService,
+    @Inject(forwardRef(() => StudentsService))
+    private readonly studentsService: StudentsService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -48,7 +53,8 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, firstName, lastName, userType, password } = createUserDto;
+    const { email, firstName, lastName, userType, password, teacherId } =
+      createUserDto;
     const hashedPassword = hashPassword(password);
 
     const newUser = new User();
@@ -67,7 +73,29 @@ export class UsersService {
       teacher.lastName = lastName;
       teacher.password = hashedPassword;
       teacher.user = savedUser;
-      await this.teachersService.create(teacher);
+      const savedTeacher = await this.teachersService.create(teacher);
+
+      savedUser.teacherId = savedTeacher.id;
+      await this.usersRepository.save(savedUser);
+    } else if (savedUser.userType === UserType.STUDENT) {
+      if (!teacherId) {
+        throw new BadRequestException('teacherId is required for students');
+      }
+      const teacher = await this.teachersService.findById(teacherId);
+      if (!teacher) {
+        throw new NotFoundException('Teacher not found');
+      }
+      const student = new Student();
+      student.email = email;
+      student.firstName = firstName;
+      student.lastName = lastName;
+      student.password = hashedPassword;
+      student.user = savedUser;
+      student.teacher = teacher;
+      const savedStudent = await this.studentsService.create(student);
+
+      savedUser.studentId = savedStudent.id;
+      await this.usersRepository.save(savedUser);
     }
 
     return savedUser;
