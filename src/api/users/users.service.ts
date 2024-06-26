@@ -53,7 +53,8 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, firstName, lastName, userType, password, teacherId } = createUserDto;
+    const { email, firstName, lastName, userType, password, teacherId } =
+      createUserDto;
     const hashedPassword = hashPassword(password);
 
     const newUser = new User();
@@ -72,7 +73,10 @@ export class UsersService {
       teacher.lastName = lastName;
       teacher.password = hashedPassword;
       teacher.user = savedUser;
-      await this.teachersService.create(teacher);
+      const savedTeacher = await this.teachersService.create(teacher);
+
+      savedUser.teacherId = savedTeacher.id;
+      await this.usersRepository.save(savedUser);
     } else if (savedUser.userType === UserType.STUDENT) {
       if (!teacherId) {
         throw new BadRequestException('teacherId is required for students');
@@ -88,7 +92,10 @@ export class UsersService {
       student.password = hashedPassword;
       student.user = savedUser;
       student.teacher = teacher;
-      await this.studentsService.create(student);
+      const savedStudent = await this.studentsService.create(student);
+
+      savedUser.studentId = savedStudent.id;
+      await this.usersRepository.save(savedUser);
     }
 
     return savedUser;

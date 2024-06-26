@@ -38,10 +38,16 @@ export class User {
   userType: UserType;
 
   @OneToOne(() => Teacher, (teacher) => teacher.user, { cascade: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'teacherId' })
   teacher: Teacher;
 
-  @OneToOne(() => Student, (teacher) => teacher.user, { cascade: true })
-  @JoinColumn()
+  @OneToOne(() => Student, (student) => student.user, { cascade: true })
+  @JoinColumn({ name: 'studentId' })
   student: Student;
+
+  @Column({ nullable: true })
+  teacherId: number;
+
+  @Column({ nullable: true })
+  studentId: number;
 }
