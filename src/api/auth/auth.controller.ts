@@ -1,4 +1,12 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogInResponse } from 'src/schemas/auth/auth.schemas';
 import {
@@ -10,11 +18,16 @@ import {
 import { Public } from '../../decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { User } from 'src/entities/users/user.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Authentication')
 @Controller()
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Public()
   @Post('register')
@@ -25,14 +38,30 @@ export class AuthController {
   })
   @ApiResponse({
     status: 400,
-    description: 'User already exists',
+    description: 'User already exists or invalid access code',
   })
-  async register(@Body() CreateUserSchema: CreateUserSchema): Promise<User> {
-    console.log(CreateUserSchema);
-    if (await this.authService.doesUserExist(CreateUserSchema.email)) {
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @UseGuards(AuthGuard)
+  async register(
+    @Body() createUserSchema: CreateUserSchema,
+    @Req() request: Request,
+  ): Promise<User> {
+    if (await this.authService.doesUserExist(createUserSchema.email)) {
       throw new BadRequestException('User already exists');
     }
-    return await this.authService.register(CreateUserSchema);
+
+    if (createUserSchema.userType === 'teacher') {
+      const token = request.headers['authorization'].split(' ')[1];
+      const user = await this.jwtService.decode(token);
+      if (!user || user.userType !== 'teacher') {
+        throw new UnauthorizedException('Only admins can create a teacher');
+      }
+    }
+
+    return await this.authService.register(createUserSchema);
   }
 
   @Public()
