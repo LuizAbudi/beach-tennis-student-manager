@@ -7,8 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/api/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { comparePassword } from 'src/core/security';
+import { comparePassword, hashPassword } from 'src/core/security';
 import { User } from 'src/entities/users/user.entity';
+import { CreateUserSchema } from 'src/schemas/users/users.schemas';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,21 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  async register(createUserIn: CreateUserSchema): Promise<User> {
+    const { email, firstName, lastName, userType, password } = createUserIn;
+    const hashedPassword = hashPassword(password);
+
+    const user = await this.usersRepository.save({
+      email,
+      firstName,
+      lastName,
+      userType,
+      password: hashedPassword,
+    });
+
+    return user;
+  }
 
   async signIn(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOne(email);

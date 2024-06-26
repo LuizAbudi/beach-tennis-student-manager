@@ -79,7 +79,7 @@ export class CreateUserSchema {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Student' })
+  @ApiProperty({ example: 'student', description: 'Student or Teacher' })
   @IsEnum(UserType)
   userType: UserType;
 
