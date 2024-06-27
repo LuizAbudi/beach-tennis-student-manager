@@ -10,16 +10,16 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogInResponse } from 'src/schemas/auth/auth.schemas';
 import {
-  CreateUserSchema,
   Oauth2SignInSchema,
   UserProfileSchema,
   UserSignInSchema,
 } from 'src/schemas/users/users.schemas';
 import { Public } from '../../decorators/public.decorator';
 import { AuthService } from './auth.service';
-import { User } from 'src/entities/users/user.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UserType } from 'src/enums';
 
 @ApiTags('Authentication')
 @Controller()
@@ -46,50 +46,34 @@ export class AuthController {
   })
   @UseGuards(AuthGuard)
   async register(
-    @Body() createUserSchema: CreateUserSchema,
+    @Body() createUserDto: CreateUserDto,
     @Req() request: Request,
-  ): Promise<User> {
-    if (await this.authService.doesUserExist(createUserSchema.email)) {
+  ) {
+    if (await this.authService.doesUserExist(createUserDto.email)) {
       throw new BadRequestException('User already exists');
     }
 
-    switch (createUserSchema.userType) {
-      case 'student':
-        if (!createUserSchema.level) {
-          throw new BadRequestException('Level is required for students');
-        }
-        if (!createUserSchema.paymentValue) {
-          throw new BadRequestException(
-            'Payment value is required for students',
-          );
-        }
-        if (!createUserSchema.paymentDate) {
-          throw new BadRequestException(
-            'Payment date is required for students',
-          );
-        }
-        break;
-      case 'teacher':
-        const token = request.headers['authorization']?.split(' ')[1];
-        const user = await this.jwtService.decode(token);
-        if (!user || user.userType !== 'teacher') {
-          throw new UnauthorizedException('Only admins can create a teacher');
-        }
-        if (
-          createUserSchema.level ||
-          createUserSchema.paymentValue ||
-          createUserSchema.paymentDate
-        ) {
-          throw new BadRequestException(
-            'Teachers cannot have level, payment value or payment date',
-          );
-        }
-        break;
-      default:
-        throw new BadRequestException('Invalid user type');
+    if (createUserDto.userType === UserType.STUDENT) {
+      if (
+        !createUserDto.level ||
+        !createUserDto.paymentValue ||
+        !createUserDto.paymentDate
+      ) {
+        throw new BadRequestException(
+          'All student-specific fields are required',
+        );
+      }
     }
 
-    return await this.authService.register(createUserSchema);
+    if (createUserDto.userType === UserType.TEACHER) {
+      const token = request.headers['authorization']?.split(' ')[1];
+      const user = await this.jwtService.decode(token);
+      if (!user || user.userType !== 'teacher') {
+        throw new UnauthorizedException('Only admins can create a teacher');
+      }
+    }
+
+    return await this.authService.register(createUserDto);
   }
 
   @Public()

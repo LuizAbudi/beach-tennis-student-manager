@@ -2,9 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users/user.entity';
-import { PaymentStatus, UserType } from '../../enums';
+import { UserType } from '../../enums';
 import { Student } from 'src/entities/students/student.entity';
-import moment from 'moment';
 
 @Injectable()
 export class UsersService {
@@ -55,21 +54,5 @@ export class UsersService {
     user.status = status;
     await this.usersRepository.save(user);
     return { message: `User with id ${id} status updated successfully` };
-  }
-
-  async updatePaymentStatus(studentId: number): Promise<void> {
-    const student = await this.studentRepository.findOneBy({ id: studentId });
-
-    if (!student) {
-      throw new NotFoundException(`Student with ID ${studentId} not found`);
-    }
-
-    const now = moment();
-    const lastPayment = moment(student.lastPaymentDate);
-    const daysSinceLastPayment = now.diff(lastPayment, 'days');
-
-    student.paymentStatus =
-      daysSinceLastPayment <= 30 ? PaymentStatus.PAID : PaymentStatus.PENDING;
-    await this.studentRepository.save(student);
   }
 }

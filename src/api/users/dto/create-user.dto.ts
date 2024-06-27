@@ -1,7 +1,15 @@
-// dto/create-user.dto.ts
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsEmail, IsEnum, IsOptional, IsInt } from 'class-validator';
-import { UserType } from '../../../enums';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsString,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsInt,
+  Max,
+  Min,
+  ValidateIf,
+} from 'class-validator';
+import { PaymentValue, StudentLevel, UserType } from '../../../enums';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
@@ -16,21 +24,43 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ example: 'student', description: 'Teacher or Student' })
-  @IsEnum(UserType, {
-    message: 'userType must be either student or teacher',
-  })
+  @ApiProperty({ example: 'student', description: 'Student or Teacher' })
+  @IsEnum(UserType)
   userType: UserType;
 
-  @ApiProperty({ example: 'password', description: 'Password' })
+  @ApiProperty({ example: 'string', description: 'Password' })
   @IsString()
   password: string;
 
-  @ApiPropertyOptional({
-    example: 1,
-    description: 'Status',
+  @ApiProperty({
+    example: 'A',
+    description: 'A ou B ou C ou D ou Pro',
+    required: false,
   })
-  @IsInt()
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsEnum(StudentLevel)
   @IsOptional()
-  status?: boolean;
+  level?: StudentLevel;
+
+  @ApiProperty({
+    example: '180',
+    description: 'Payment value',
+    required: false,
+  })
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsEnum(PaymentValue)
+  @IsOptional()
+  paymentValue?: PaymentValue;
+
+  @ApiProperty({
+    example: '15',
+    description: 'Payment date (1 - 30)',
+    required: false,
+  })
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsInt()
+  @Min(1)
+  @Max(30)
+  @IsOptional()
+  paymentDate?: number;
 }

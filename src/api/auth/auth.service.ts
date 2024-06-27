@@ -9,8 +9,10 @@ import { UsersService } from 'src/api/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { comparePassword, hashPassword } from 'src/core/security';
 import { User } from 'src/entities/users/user.entity';
-import { CreateUserSchema } from 'src/schemas/users/users.schemas';
 import { Student } from 'src/entities/students/student.entity';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { StudentsService } from '../students/students.service';
+import { Teacher } from 'src/entities/teachers/teacher.entity';
 
 @Injectable()
 export class AuthService {
@@ -19,11 +21,14 @@ export class AuthService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Teacher)
+    private readonly teacherRepository: Repository<Teacher>,
     private usersService: UsersService,
+    private studentsService: StudentsService,
     private jwtService: JwtService,
   ) {}
 
-  async register(createUserIn: CreateUserSchema): Promise<User> {
+  async register(createUserIn: CreateUserDto): Promise<User> {
     const {
       email,
       firstName,
@@ -51,6 +56,8 @@ export class AuthService {
         paymentDate,
         paymentValue,
       });
+    } else {
+      await this.teacherRepository.save({ user });
     }
 
     return user;
@@ -68,7 +75,7 @@ export class AuthService {
     if (user.userType === 'student') {
       const student = await this.studentRepository.findOne({ where: { user } });
       if (student) {
-        await this.usersService.updatePaymentStatus(student.id);
+        await this.studentsService.updatePaymentStatus(student.id);
       }
     }
 

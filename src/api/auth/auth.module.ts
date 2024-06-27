@@ -9,11 +9,14 @@ import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/users/user.entity';
 import { Student } from 'src/entities/students/student.entity';
+import { Teacher } from 'src/entities/teachers/teacher.entity';
+import { StudentsModule } from '../students/students.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Student]),
+    TypeOrmModule.forFeature([User, Student, Teacher]),
     UsersModule,
+    StudentsModule,
     ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
