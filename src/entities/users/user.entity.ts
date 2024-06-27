@@ -39,4 +39,10 @@ export class User {
     nullable: true,
   })
   student?: Student;
+
+  @OneToOne(() => Student, (student) => student.user, {
+    cascade: true,
+    nullable: true,
+  })
+  teacher?: Student;
 }

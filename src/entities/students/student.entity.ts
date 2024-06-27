@@ -2,19 +2,20 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaymentStatus, PaymentValue } from 'src/enums';
+import { Teacher } from '../teachers/teacher.entity';
 
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.student)
+  @ManyToOne(() => User, (user) => user.student)
   @JoinColumn({ name: 'userId' })
   user: User;
 
@@ -37,4 +38,8 @@ export class Student {
   @ApiProperty({ example: '2021-01-01', description: 'Last Payment date' })
   @Column({ nullable: true })
   lastPaymentDate: Date;
+
+  @ManyToOne(() => Teacher, (teacher) => teacher.students)
+  @JoinColumn({ name: 'teacherId' })
+  teacher: Teacher;
 }

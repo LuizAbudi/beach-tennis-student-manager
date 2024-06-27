@@ -8,6 +8,7 @@ import { UsersModule } from './api/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import configuration from 'config/configuration';
+import { StudentsModule } from './api/students/students.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import configuration from 'config/configuration';
     // Import modules
     AuthModule,
     UsersModule,
+    StudentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
