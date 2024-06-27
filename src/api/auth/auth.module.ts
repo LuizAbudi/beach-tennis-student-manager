@@ -8,10 +8,11 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/users/user.entity';
+import { Student } from 'src/entities/students/student.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Student]),
     UsersModule,
     ConfigModule,
     JwtModule.registerAsync({

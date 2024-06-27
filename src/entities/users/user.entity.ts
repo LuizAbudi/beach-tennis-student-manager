@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
 import { UserType } from 'src/api/users/enums';
+import { Student } from '../students/student.entity';
 
 @Entity()
 export class User {
@@ -32,4 +33,10 @@ export class User {
   @ApiProperty({ example: true, description: 'Status' })
   @Column({ default: true })
   status: boolean;
+
+  @OneToOne(() => Student, (student) => student.user, {
+    cascade: true,
+    nullable: true,
+  })
+  student?: Student;
 }

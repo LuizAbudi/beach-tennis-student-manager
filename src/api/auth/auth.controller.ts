@@ -53,12 +53,40 @@ export class AuthController {
       throw new BadRequestException('User already exists');
     }
 
-    if (createUserSchema.userType === 'teacher') {
-      const token = request.headers['authorization'].split(' ')[1];
-      const user = await this.jwtService.decode(token);
-      if (!user || user.userType !== 'teacher') {
-        throw new UnauthorizedException('Only admins can create a teacher');
-      }
+    switch (createUserSchema.userType) {
+      case 'student':
+        if (!createUserSchema.level) {
+          throw new BadRequestException('Level is required for students');
+        }
+        if (!createUserSchema.paymentValue) {
+          throw new BadRequestException(
+            'Payment value is required for students',
+          );
+        }
+        if (!createUserSchema.paymentDate) {
+          throw new BadRequestException(
+            'Payment date is required for students',
+          );
+        }
+        break;
+      case 'teacher':
+        const token = request.headers['authorization']?.split(' ')[1];
+        const user = await this.jwtService.decode(token);
+        if (!user || user.userType !== 'teacher') {
+          throw new UnauthorizedException('Only admins can create a teacher');
+        }
+        if (
+          createUserSchema.level ||
+          createUserSchema.paymentValue ||
+          createUserSchema.paymentDate
+        ) {
+          throw new BadRequestException(
+            'Teachers cannot have level, payment value or payment date',
+          );
+        }
+        break;
+      default:
+        throw new BadRequestException('Invalid user type');
     }
 
     return await this.authService.register(createUserSchema);

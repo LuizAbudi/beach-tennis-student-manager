@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsEnum } from 'class-validator';
-import { UserType } from 'src/api/users/enums';
+import { IsString, IsEmail, IsEnum, IsInt, Min, Max } from 'class-validator';
+import { PaymentValue, StudentLevel, UserType } from 'src/api/users/enums';
 
 // schema that is used when a user is pulled from the database
 export class UserProfileSchema {
@@ -86,4 +86,18 @@ export class CreateUserSchema {
   @ApiProperty({ example: 'string', description: 'Password' })
   @IsString()
   password: string;
+
+  @ApiProperty({ example: 'A', description: 'A ou B ou C ou D ou Pro' })
+  @IsEnum(StudentLevel)
+  level?: StudentLevel;
+
+  @ApiProperty({ example: '180', description: 'Payment value' })
+  @IsEnum(PaymentValue)
+  paymentValue?: PaymentValue;
+
+  @ApiProperty({ example: '15', description: 'Payment date (1 - 30)' })
+  @IsInt()
+  @Min(1)
+  @Max(30)
+  paymentDate: number;
 }
