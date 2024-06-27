@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { PaymentStatus, PaymentValue } from 'src/api/users/enums';
+import { PaymentStatus, PaymentValue } from 'src/enums';
 
 @Entity()
 export class Student {

@@ -1,7 +1,7 @@
 // dto/create-user.dto.ts
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsEmail, IsEnum, IsOptional, IsInt } from 'class-validator';
-import { UserType } from '../enums';
+import { UserType } from '../../../enums';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })

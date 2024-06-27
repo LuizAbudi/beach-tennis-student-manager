@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users/user.entity';
-import { PaymentStatus, UserType } from './enums';
+import { PaymentStatus, UserType } from '../../enums';
 import { Student } from 'src/entities/students/student.entity';
 import moment from 'moment';
 

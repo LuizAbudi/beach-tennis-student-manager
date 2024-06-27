@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-import { UserType } from 'src/api/users/enums';
+import { UserType } from 'src/enums';
 import { Student } from '../students/student.entity';
 
 @Entity()
