@@ -4,6 +4,7 @@ import {
   Body,
   Param,
   NotFoundException,
+  Get,
 } from '@nestjs/common';
 import { ApiTags, ApiOAuth2, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
@@ -13,6 +14,7 @@ import {
   UpdateStudentPaymentValueDto,
   updateStudentLevelDto,
 } from './dto/update-student.dto';
+import { StudentsProfileSchema } from 'src/schemas/students/students.schema';
 
 @ApiOAuth2([], 'Authentication')
 @ApiTags('Students')
@@ -111,5 +113,17 @@ export class StudentsController {
       throw new NotFoundException('Student not found');
     }
     return { message: 'Student Last Payment Date Updated' };
+  }
+
+  @Get('all')
+  @ApiOperation({ summary: 'Get all students' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of students retrieved successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Teachers not found' })
+  @ApiResponse({ status: 401, description: 'Access Forbidden' })
+  findAllTeachers(): Promise<StudentsProfileSchema[]> {
+    return this.studentsService.findAllStudents();
   }
 }

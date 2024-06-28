@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from 'src/entities/students/student.entity';
 import { PaymentStatus, PaymentValue, StudentLevel } from 'src/enums';
+import { User } from 'src/entities/users/user.entity';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async updatePaymentStatus(studentId: number): Promise<{ message: string }> {
@@ -88,5 +91,19 @@ export class StudentsService {
     return {
       message: `Student with id ${studentId} last payment date updated successfully`,
     };
+  }
+
+  async findAllStudents() {
+    const students = await this.studentRepository.find({ relations: ['user'] });
+    const studentsWithUser = await Promise.all(
+      students.map(async (student) => {
+        const user = await this.userRepository.findOneBy({
+          id: student.user.id,
+        });
+        return { ...student, user };
+      }),
+    );
+
+    return studentsWithUser;
   }
 }

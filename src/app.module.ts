@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from 'config/configuration';
 import { StudentsModule } from './api/students/students.module';
 import { TeachersModule } from './api/teachers/teachers.module';
+import { ScheduleModule } from './api/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TeachersModule } from './api/teachers/teachers.module';
     UsersModule,
     StudentsModule,
     TeachersModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
