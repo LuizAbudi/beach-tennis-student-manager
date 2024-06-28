@@ -60,7 +60,7 @@ export class AuthController {
         !createUserDto.paymentDate
       ) {
         throw new BadRequestException(
-          'All student-specific fields are required',
+          'Missing required fields: level, paymentValue, paymentDate',
         );
       }
     }
