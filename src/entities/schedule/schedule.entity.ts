@@ -6,6 +6,8 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Teacher } from '../teachers/teacher.entity';
+import { Weekday } from 'src/enums';
+import { IsEnum } from 'class-validator';
 
 @Entity()
 export class Schedule {
@@ -13,7 +15,11 @@ export class Schedule {
   id: number;
 
   @Column({ type: 'varchar', length: 10 })
-  dayOfWeek: string;
+  @IsEnum(Weekday, {
+    message:
+      'dayOfWeek must be [monday, tuesday, wednesday, thursday, friday, saturday, sunday]',
+  })
+  dayOfWeek: Weekday;
 
   @Column({ type: 'time' })
   startTime: string;

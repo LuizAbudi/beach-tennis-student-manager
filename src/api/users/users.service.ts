@@ -3,15 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users/user.entity';
 import { UserType } from '../../enums';
-import { Student } from 'src/entities/students/student.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>,
   ) {}
 
   async findAll(): Promise<User[]> {
