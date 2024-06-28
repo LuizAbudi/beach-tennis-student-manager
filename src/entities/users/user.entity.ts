@@ -1,14 +1,7 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-import { Teacher } from '../teachers/teacher.entity';
-import { UserType } from 'src/api/users/enums';
+import { UserType } from 'src/enums';
 import { Student } from '../students/student.entity';
 
 @Entity()
@@ -37,17 +30,19 @@ export class User {
   @IsEnum(UserType, { message: 'userType must be either student or teacher' })
   userType: UserType;
 
-  @OneToOne(() => Teacher, (teacher) => teacher.user, { cascade: true })
-  @JoinColumn({ name: 'teacherId' })
-  teacher: Teacher;
+  @ApiProperty({ example: true, description: 'Status' })
+  @Column({ default: true })
+  status: boolean;
 
-  @OneToOne(() => Student, (student) => student.user, { cascade: true })
-  @JoinColumn({ name: 'studentId' })
-  student: Student;
+  @OneToOne(() => Student, (student) => student.user, {
+    cascade: true,
+    nullable: true,
+  })
+  student?: Student;
 
-  @Column({ nullable: true })
-  teacherId: number;
-
-  @Column({ nullable: true })
-  studentId: number;
+  @OneToOne(() => Student, (student) => student.user, {
+    cascade: true,
+    nullable: true,
+  })
+  teacher?: Student;
 }
