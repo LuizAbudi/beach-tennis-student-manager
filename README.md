@@ -65,14 +65,8 @@ Você pode acessar a documentação da API no endpoint `/docs` após iniciar o s
 - **Gerenciamento de Alunos**: CRUD completo para gerenciar informações de alunos de beach tennis.
 - **Documentação Swagger**: Documentação interativa da API disponível em `/docs`.
 
-## Contribuindo
-
-Contribuições são bem-vindas! Por favor, abra uma issue ou envie um pull request para discutir as alterações que você gostaria de fazer.
-
 ## Licença
 
 Este projeto é licenciado sob a [MIT License](LICENSE).
 
 ---
-
-Sinta-se à vontade para personalizar este README.md de acordo com as necessidades específicas do seu projeto.
