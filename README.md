@@ -15,21 +15,7 @@ Este projeto é uma API RESTful desenvolvida com [NestJS](https://nestjs.com/) e
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-### Instalação
-
-1. Clone este repositório:
-
-```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-```
-
-2. Navegue até o diretório do projeto:
-
-```bash
-cd nome-do-repositorio
-```
-
-3. Instale as dependências:
+1. Instale as dependências:
 
 ```bash
 yarn install
