@@ -1,0 +1,18 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Trigger Render Deploy Hook
+      run: |
+        curl -X POST https://api.render.com/deploy/srv-cqleldo8fa8c73aprvv0?key=ZbUXU4TqJCk
