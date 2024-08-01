@@ -11,6 +11,7 @@ import configuration from 'config/configuration';
 import { StudentsModule } from './api/students/students.module';
 import { TeachersModule } from './api/teachers/teachers.module';
 import { ScheduleModule } from './api/schedule/schedule.module';
+import { SeedService } from './seed/seed.service';
 
 @Module({
   imports: [
@@ -39,6 +40,6 @@ import { ScheduleModule } from './api/schedule/schedule.module';
     ScheduleModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule {}
