@@ -3,12 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { PaymentStatus, PaymentValue } from 'src/enums';
 import { Teacher } from '../teachers/teacher.entity';
+import { Payment } from '../payment/payment.entity';
 
 @Entity()
 export class Student {
@@ -23,21 +24,8 @@ export class Student {
   @Column()
   level: string;
 
-  @ApiProperty({ example: 'paid', description: 'Payment status' })
-  @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
-  paymentStatus: PaymentStatus;
-
-  @ApiProperty({ example: '15', description: 'Payment date (1 a 30)' })
-  @Column({ type: 'int', width: 2 })
-  paymentDate: number;
-
-  @ApiProperty({ example: '180', description: '180 ou 240 ou 320' })
-  @Column()
-  paymentValue: PaymentValue;
-
-  @ApiProperty({ example: '2021-01-01', description: 'Last Payment date' })
-  @Column({ nullable: true })
-  lastPaymentDate: Date;
+  @OneToOne(() => Payment, (payment) => payment.student)
+  payment: Payment;
 
   @ApiProperty({ example: '1', description: 'Teacher ID' })
   @ManyToOne(() => Teacher, (teacher) => teacher.students)

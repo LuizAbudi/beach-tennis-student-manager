@@ -64,6 +64,7 @@ export class AuthController {
           'Missing required fields: level, paymentValue, paymentDate, teacherId',
         );
       }
+
       if (!(await this.authService.doesTeacherExist(createUserDto.teacherId))) {
         throw new BadRequestException('Teacher does not exist');
       }

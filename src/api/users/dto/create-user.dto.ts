@@ -8,6 +8,7 @@ import {
   Max,
   Min,
   ValidateIf,
+  IsISO8601,
 } from 'class-validator';
 import { PaymentValue, StudentLevel, UserType } from '../../../enums';
 
@@ -63,6 +64,16 @@ export class CreateUserDto {
   @Max(30)
   @IsOptional()
   paymentDate?: number;
+
+  @ApiProperty({
+    example: '2024-01-01',
+    description: 'Last payment date',
+    required: false,
+  })
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsISO8601()
+  @IsOptional()
+  lastPaymentDate?: Date;
 
   @ApiProperty({
     example: '1',
