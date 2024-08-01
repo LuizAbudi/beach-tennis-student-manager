@@ -63,4 +63,14 @@ export class CreateUserDto {
   @Max(30)
   @IsOptional()
   paymentDate?: number;
+
+  @ApiProperty({
+    example: '1',
+    description: 'Teacher id',
+    required: false,
+  })
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsInt()
+  @IsOptional()
+  teacherId?: number;
 }

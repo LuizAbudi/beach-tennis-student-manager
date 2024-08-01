@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
   Column,
 } from 'typeorm';
 import { User } from '../users/user.entity';
@@ -28,14 +29,6 @@ export class Teacher {
   @Column({ type: 'text', nullable: true })
   availableDates: string;
 
-  @ManyToMany(() => Student, (student) => student.teacher)
-  @JoinTable({
-    name: 'teacher_students',
-    joinColumn: { name: 'teacherId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'studentId', referencedColumnName: 'id' },
-  })
-  students: Student[];
-
   @ManyToMany(() => Schedule, (schedule) => schedule.teachers)
   @JoinTable({
     name: 'teacher_schedule',
@@ -43,4 +36,7 @@ export class Teacher {
     inverseJoinColumn: { name: 'scheduleId', referencedColumnName: 'id' },
   })
   schedules: Schedule[];
+
+  @OneToMany(() => Student, (student) => student.teacher)
+  students: Student[];
 }
