@@ -46,36 +46,6 @@ export class TeachersService {
     return this.teacherRepository.save(teacher);
   }
 
-  async associateTeacherToStudent(teacherId: number, studentId: number) {
-    if (isNaN(teacherId) || isNaN(studentId)) {
-      throw new BadRequestException('Invalid teacherId or studentId');
-    }
-    const teacher = await this.teacherRepository.findOne({
-      where: { id: teacherId },
-      relations: ['students'],
-    });
-
-    if (!teacher) {
-      throw new NotFoundException(`Teacher with id ${teacherId} not found`);
-    }
-
-    const student = await this.studentRepository.findOneBy({
-      id: studentId,
-    });
-
-    if (!student) {
-      throw new NotFoundException(`Student with id ${studentId} not found`);
-    }
-
-    teacher.students.push(student);
-
-    await this.teacherRepository.save(teacher);
-
-    return {
-      message: `Student with id ${studentId} has been associated with teacher with id ${teacherId}`,
-    };
-  }
-
   async findAllTeachers() {
     const teachers = await this.teacherRepository.find({ relations: ['user'] });
     const teachersWithUser = await Promise.all(

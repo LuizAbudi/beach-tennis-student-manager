@@ -57,11 +57,15 @@ export class AuthController {
       if (
         !createUserDto.level ||
         !createUserDto.paymentValue ||
-        !createUserDto.paymentDate
+        !createUserDto.paymentDate ||
+        !createUserDto.teacherId
       ) {
         throw new BadRequestException(
-          'Missing required fields: level, paymentValue, paymentDate',
+          'Missing required fields: level, paymentValue, paymentDate, teacherId',
         );
+      }
+      if (!(await this.authService.doesTeacherExist(createUserDto.teacherId))) {
+        throw new BadRequestException('Teacher does not exist');
       }
     }
 
@@ -105,6 +109,6 @@ export class AuthController {
     description: 'User not found',
   })
   signInDocs(@Body() signInDto: Oauth2SignInSchema) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+    return this.authService.signIn(signInDto.email, signInDto.password);
   }
 }

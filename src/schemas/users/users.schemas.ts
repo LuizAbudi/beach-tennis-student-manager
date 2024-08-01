@@ -36,7 +36,7 @@ export class UserSignInSchema {
 export class Oauth2SignInSchema {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   @IsEmail()
-  readonly username: string;
+  readonly email: string;
 
   @ApiProperty({ example: 'string', description: 'password' })
   @IsString()

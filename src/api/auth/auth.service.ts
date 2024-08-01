@@ -38,6 +38,7 @@ export class AuthService {
       level,
       paymentDate,
       paymentValue,
+      teacherId,
     } = createUserIn;
     const hashedPassword = hashPassword(password);
 
@@ -50,11 +51,15 @@ export class AuthService {
     });
 
     if (user.userType === 'student') {
+      const teacher = await this.teacherRepository.findOne({
+        where: { id: teacherId },
+      });
       await this.studentRepository.save({
         user,
         level,
         paymentDate,
         paymentValue,
+        teacher,
       });
     } else {
       await this.teacherRepository.save({ user });
@@ -91,6 +96,16 @@ export class AuthService {
   async doesUserExist(email: string): Promise<boolean> {
     const user = await this.usersService.findOne(email);
     if (user) {
+      return true;
+    }
+    return false;
+  }
+
+  async doesTeacherExist(teacherId: number): Promise<boolean> {
+    const teacher = await this.teacherRepository.findOne({
+      where: { id: teacherId },
+    });
+    if (teacher) {
       return true;
     }
     return false;

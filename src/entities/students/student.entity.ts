@@ -39,6 +39,7 @@ export class Student {
   @Column({ nullable: true })
   lastPaymentDate: Date;
 
+  @ApiProperty({ example: '1', description: 'Teacher ID' })
   @ManyToOne(() => Teacher, (teacher) => teacher.students)
   @JoinColumn({ name: 'teacherId' })
   teacher: Teacher;
