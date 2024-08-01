@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './api/auth/auth.module';
 import { UsersModule } from './api/users/users.module';
+import { PaymentModule } from './api/payment/payment.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -38,6 +39,7 @@ import { SeedService } from './seed/seed.service';
     StudentsModule,
     TeachersModule,
     ScheduleModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

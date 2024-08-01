@@ -11,8 +11,10 @@ import { comparePassword, hashPassword } from 'src/core/security';
 import { User } from 'src/entities/users/user.entity';
 import { Student } from 'src/entities/students/student.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { StudentsService } from '../students/students.service';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
+import { PaymentService } from '../payment/payment.service';
+import { PaymentStatus } from 'src/enums';
+import { Payment } from 'src/entities/payment/payment.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +25,10 @@ export class AuthService {
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(Teacher)
     private readonly teacherRepository: Repository<Teacher>,
+    @InjectRepository(Payment)
+    private readonly paymentRepository: Repository<Payment>,
     private usersService: UsersService,
-    private studentsService: StudentsService,
+    private paymentsService: PaymentService,
     private jwtService: JwtService,
   ) {}
 
@@ -39,6 +43,7 @@ export class AuthService {
       paymentDate,
       paymentValue,
       teacherId,
+      lastPaymentDate,
     } = createUserIn;
     const hashedPassword = hashPassword(password);
 
@@ -54,13 +59,23 @@ export class AuthService {
       const teacher = await this.teacherRepository.findOne({
         where: { id: teacherId },
       });
-      await this.studentRepository.save({
+
+      const student = await this.studentRepository.save({
         user,
         level,
-        paymentDate,
-        paymentValue,
         teacher,
       });
+
+      const payment = await this.paymentRepository.save({
+        student: student,
+        paymentDate,
+        paymentValue,
+        paymentStatus: PaymentStatus.PENDING,
+        lastPaymentDate: lastPaymentDate ?? null,
+      });
+
+      student.payment = payment;
+      await this.studentRepository.save(student);
     } else {
       await this.teacherRepository.save({ user });
     }
@@ -80,7 +95,10 @@ export class AuthService {
     if (user.userType === 'student') {
       const student = await this.studentRepository.findOne({ where: { user } });
       if (student) {
-        await this.studentsService.updatePaymentStatus(student.id);
+        await this.paymentsService.updatePaymentStatus(
+          student.id,
+          PaymentStatus.PAID,
+        );
       }
     }
 
