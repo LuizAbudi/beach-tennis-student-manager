@@ -9,10 +9,8 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
 import {
-  UpdateLastPaymentDateDto,
   UpdatePaymentDateDto,
   UpdatePaymentStatusDto,
-  UpdatePaymentValueDto,
 } from './dto/update-payment.dto';
 
 @ApiTags('Payments')
@@ -34,44 +32,6 @@ export class PaymentController {
         updatePaymentDto.paymentDate,
       );
       return { message: 'Payment Date Updated Successfully' };
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  @Put(':studentId/update-payment-value')
-  @ApiOperation({ summary: 'Update Payment Value for a Student' })
-  @ApiResponse({ status: 200, description: 'Payment Value Updated' })
-  @ApiResponse({ status: 404, description: 'Payment or Student not found' })
-  async updatePaymentValue(
-    @Param('studentId') studentId: number,
-    @Body() updatePaymentDto: UpdatePaymentValueDto,
-  ) {
-    try {
-      await this.paymentService.updatePaymentValue(
-        studentId,
-        updatePaymentDto.paymentValue,
-      );
-      return { message: 'Payment Value Updated Successfully' };
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  @Put(':studentId/update-last-payment-date')
-  @ApiOperation({ summary: 'Update Last Payment Date for a Student' })
-  @ApiResponse({ status: 200, description: 'Last Payment Date Updated' })
-  @ApiResponse({ status: 404, description: 'Payment or Student not found' })
-  async updateLastPaymentDate(
-    @Param('studentId') studentId: number,
-    @Body() updatePaymentDto: UpdateLastPaymentDateDto,
-  ) {
-    try {
-      await this.paymentService.updateLastPaymentDate(
-        studentId,
-        updatePaymentDto.lastPaymentDate,
-      );
-      return { message: 'Last Payment Date Updated Successfully' };
     } catch (error) {
       throw new NotFoundException(error.message);
     }

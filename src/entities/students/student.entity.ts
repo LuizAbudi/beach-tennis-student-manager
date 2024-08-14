@@ -24,6 +24,10 @@ export class Student {
   @Column()
   level: string;
 
+  @ApiProperty({ example: '15', description: 'Payment day {1 - 31}' })
+  @Column()
+  paymentDay: number;
+
   @OneToOne(() => Payment, (payment) => payment.student)
   payment: Payment;
 

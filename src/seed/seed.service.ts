@@ -13,9 +13,8 @@ export class SeedService implements OnModuleInit {
 
   async seed() {
     const defaultUser: CreateUserDto = {
-      email: 'defaultuser@example.com',
-      firstName: 'Default',
-      lastName: 'User',
+      email: 'user@example.com',
+      name: 'User',
       userType: UserType.TEACHER,
       password: 'admin',
     };

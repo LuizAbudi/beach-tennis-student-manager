@@ -11,7 +11,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from 'config/configuration';
 import { StudentsModule } from './api/students/students.module';
 import { TeachersModule } from './api/teachers/teachers.module';
-import { ScheduleModule } from './api/schedule/schedule.module';
 import { SeedService } from './seed/seed.service';
 
 @Module({
@@ -38,7 +37,6 @@ import { SeedService } from './seed/seed.service';
     UsersModule,
     StudentsModule,
     TeachersModule,
-    ScheduleModule,
     PaymentModule,
   ],
   controllers: [AppController],
