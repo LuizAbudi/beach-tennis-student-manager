@@ -7,7 +7,7 @@ import {
   IsInt,
   ValidateIf,
 } from 'class-validator';
-import { StudentLevel, UserType } from '../../../enums';
+import { LevelNames, UserType } from '../../../enums';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
@@ -32,9 +32,9 @@ export class CreateUserDto {
     required: false,
   })
   @ValidateIf((o) => o.userType === UserType.STUDENT)
-  @IsEnum(StudentLevel)
+  @IsEnum(LevelNames)
   @IsOptional()
-  level?: StudentLevel;
+  level?: LevelNames;
 
   @ApiProperty({
     example: '1',
