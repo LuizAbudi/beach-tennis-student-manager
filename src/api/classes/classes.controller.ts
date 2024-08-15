@@ -17,8 +17,7 @@ export class ClassesController {
 
   @Post('create-class')
   @ApiOperation({ summary: 'Create new class' })
-  @ApiResponse({ status: 200, description: 'Class created' })
-  @ApiResponse({ status: 404, description: 'Class not created' })
+  @ApiResponse({ status: 201, description: 'Class created' })
   async createClass(@Body() createClassDto: CreateClassDto) {
     try {
       await this.classesService.createClass(createClassDto);
@@ -54,8 +53,7 @@ export class ClassesController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update class' })
-  @ApiResponse({ status: 200, description: 'Class updated' })
-  @ApiResponse({ status: 404, description: 'Class not updated' })
+  @ApiResponse({ status: 201, description: 'Class updated' })
   async updateClass(
     @Body('classId') classId: number,
     @Body() updateClassDto: CreateClassDto,
