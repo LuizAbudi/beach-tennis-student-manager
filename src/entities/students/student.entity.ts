@@ -32,7 +32,7 @@ export class Student {
   level: LevelNames;
 
   @ApiProperty({ example: '15', description: 'Payment day {1 - 31}' })
-  @Column()
+  @Column({ default: 1 })
   paymentDay: number;
 
   @OneToOne(() => Payment, (payment) => payment.student)

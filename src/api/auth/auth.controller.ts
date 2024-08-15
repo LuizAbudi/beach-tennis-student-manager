@@ -54,9 +54,13 @@ export class AuthController {
     }
 
     if (createUserDto.userType === UserType.STUDENT) {
-      if (!createUserDto.level || !createUserDto.teacherId) {
+      if (
+        !createUserDto.level ||
+        !createUserDto.teacherId ||
+        !createUserDto.paymentDate
+      ) {
         throw new BadRequestException(
-          'Missing required fields: level, teacherId',
+          'Missing required fields: level, teacherId, paymentDate',
         );
       }
 

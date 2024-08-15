@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsInt,
   ValidateIf,
+  IsNumber,
 } from 'class-validator';
 import { LevelNames, UserType } from '../../../enums';
 
@@ -35,6 +36,16 @@ export class CreateUserDto {
   @IsEnum(LevelNames)
   @IsOptional()
   level?: LevelNames;
+
+  @ApiProperty({
+    example: '15',
+    description: 'Payment date',
+    required: false,
+  })
+  @ValidateIf((o) => o.userType === UserType.STUDENT)
+  @IsNumber()
+  @IsOptional()
+  paymentDate?: number;
 
   @ApiProperty({
     example: '1',

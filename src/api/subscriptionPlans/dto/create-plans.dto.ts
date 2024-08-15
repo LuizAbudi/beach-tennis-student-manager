@@ -1,17 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Max, Min } from 'class-validator';
+import { IsString, IsNumber, IsInt, Min, Max } from 'class-validator';
 
 export class CreateSubscriptionPlanDto {
-  @ApiProperty({ example: 'Nome do plano', description: '' })
+  @ApiProperty({
+    example: 'Nome do plano',
+    description: 'Nome do plano de assinatura',
+  })
+  @IsString()
   planName: string;
 
-  @ApiProperty({ example: 'Valores do plano', description: '180, 240, 320' })
+  @ApiProperty({ example: 180, description: 'Valor do plano' })
+  @IsNumber()
   planValue: number;
 
-  @ApiProperty({
-    example: 'Numero de aulas na semana',
-    description: '1, 2, 3, 4 ou 5',
-  })
+  @ApiProperty({ example: 3, description: 'Número de aulas na semana' })
+  @IsInt()
   @Min(1)
   @Max(5)
   numberOfClasses: number;

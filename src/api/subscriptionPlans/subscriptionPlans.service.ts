@@ -18,15 +18,25 @@ export class SubscriptionPlanService {
   async getSubscriptionPlanById(
     subscriptionPlanId: number,
   ): Promise<SubscriptionPlan> {
-    return this.subscriptionPlanRepository.findOneBy({
+    const subscriptionPlan = await this.subscriptionPlanRepository.findOneBy({
       id: subscriptionPlanId,
     });
+    if (!subscriptionPlan) {
+      throw new NotFoundException(
+        `SubscriptionPlan with id ${subscriptionPlanId} not found`,
+      );
+    }
+    return subscriptionPlan;
   }
 
   async createSubscriptionPlan(
     createSubscriptionPlanDto: CreateSubscriptionPlanDto,
   ): Promise<SubscriptionPlan> {
-    return this.subscriptionPlanRepository.save(createSubscriptionPlanDto);
+    const subscriptionPlan = this.subscriptionPlanRepository.create({
+      ...createSubscriptionPlanDto,
+    });
+
+    return this.subscriptionPlanRepository.save(subscriptionPlan);
   }
 
   async updateSubscriptionPlan(
@@ -42,6 +52,7 @@ export class SubscriptionPlanService {
         `SubscriptionPlan with id ${subscriptionPlanId} not found`,
       );
     }
+
     return this.subscriptionPlanRepository.save({
       ...subscriptionPlanToUpdate,
       ...updateSubscriptionPlanDto,

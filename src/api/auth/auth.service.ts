@@ -27,7 +27,8 @@ export class AuthService {
   ) {}
 
   async register(createUserIn: CreateUserDto): Promise<User> {
-    const { email, name, userType, password, level, teacherId } = createUserIn;
+    const { email, name, userType, password, level, paymentDate, teacherId } =
+      createUserIn;
     const hashedPassword = hashPassword(password);
 
     const user = await this.usersRepository.save({
@@ -45,6 +46,7 @@ export class AuthService {
       const student = await this.studentRepository.save({
         user,
         level,
+        paymentDate,
         teacher,
       });
 
