@@ -12,6 +12,8 @@ import configuration from 'config/configuration';
 import { StudentsModule } from './api/students/students.module';
 import { TeachersModule } from './api/teachers/teachers.module';
 import { SeedService } from './seed/seed.service';
+import { SubscriptionPlanModule } from './api/subscriptionPlans/subscriptionPlans.module';
+import { ClassesModule } from './api/classes/classes.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { SeedService } from './seed/seed.service';
     StudentsModule,
     TeachersModule,
     PaymentModule,
+    SubscriptionPlanModule,
+    ClassesModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],
