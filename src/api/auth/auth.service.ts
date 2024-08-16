@@ -108,7 +108,14 @@ export class AuthService {
       userType: user.userType,
     };
 
-    return { access_token: await this.jwtService.signAsync(payload) };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      access_token: accessToken,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
   }
 
   async doesUserExist(email: string): Promise<boolean> {
