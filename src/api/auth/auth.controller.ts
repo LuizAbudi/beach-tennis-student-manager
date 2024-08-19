@@ -4,8 +4,6 @@ import {
   Controller,
   Post,
   UseGuards,
-  Req,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogInResponse } from 'src/schemas/auth/auth.schemas';
@@ -17,17 +15,13 @@ import {
 import { Public } from '../../decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserType } from 'src/enums';
 
 @ApiTags('Authentication')
 @Controller()
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Public()
   @Post('register')
@@ -45,10 +39,7 @@ export class AuthController {
     description: 'Unauthorized',
   })
   @UseGuards(AuthGuard)
-  async register(
-    @Body() createUserDto: CreateUserDto,
-    @Req() request: Request,
-  ) {
+  async register(@Body() createUserDto: CreateUserDto) {
     if (await this.authService.doesUserExist(createUserDto.email)) {
       throw new BadRequestException('User already exists');
     }
@@ -66,14 +57,6 @@ export class AuthController {
 
       if (!(await this.authService.doesTeacherExist(createUserDto.teacherId))) {
         throw new BadRequestException('Teacher does not exist');
-      }
-    }
-
-    if (createUserDto.userType === UserType.TEACHER) {
-      const token = request.headers['authorization']?.split(' ')[1];
-      const user = await this.jwtService.decode(token);
-      if (!user || user.userType !== 'teacher') {
-        throw new UnauthorizedException('Only admins can create a teacher');
       }
     }
 
