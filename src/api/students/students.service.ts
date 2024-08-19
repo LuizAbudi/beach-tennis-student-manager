@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from 'src/entities/students/student.entity';
-import { StudentLevel } from 'src/enums';
 import { User } from 'src/entities/users/user.entity';
+import { LevelNames } from 'src/enums';
 
 @Injectable()
 export class StudentsService {
@@ -16,9 +16,9 @@ export class StudentsService {
 
   async updateStudentLevel(
     studentId: number,
-    level: StudentLevel,
+    level: LevelNames,
   ): Promise<{ message: string }> {
-    if (!Object.values(StudentLevel).includes(level)) {
+    if (!Object.values(LevelNames).includes(level)) {
       throw new NotFoundException(`Student level ${level} not exists`);
     }
     const student = await this.studentRepository.findOneBy({ id: studentId });

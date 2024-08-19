@@ -11,12 +11,11 @@ import { User } from 'src/entities/users/user.entity';
 import { Student } from 'src/entities/students/student.entity';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { StudentsModule } from '../students/students.module';
-import { Payment } from 'src/entities/payment/payment.entity';
 import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Student, Teacher, Payment]),
+    TypeOrmModule.forFeature([User, Student, Teacher]),
     UsersModule,
     StudentsModule,
     PaymentModule,

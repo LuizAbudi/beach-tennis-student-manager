@@ -13,13 +13,9 @@ export class User {
   @Column({ nullable: false })
   email: string;
 
-  @ApiProperty({ example: 'John', description: 'First name' })
+  @ApiProperty({ example: 'John', description: 'Name' })
   @Column({ nullable: false })
-  firstName: string;
-
-  @ApiProperty({ example: 'Doe', description: 'Last name' })
-  @Column({ nullable: false })
-  lastName: string;
+  name: string;
 
   @ApiProperty({ example: 'string', description: 'Password' })
   @Column({ nullable: false, select: false })

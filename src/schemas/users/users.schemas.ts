@@ -10,11 +10,8 @@ export class UserProfileSchema {
   @ApiProperty({ example: 'user@example.com', description: 'Email' })
   email: string;
 
-  @ApiProperty({ example: 'John', description: 'First name' })
-  firstName: string;
-
-  @ApiProperty({ example: 'Doe', description: 'Last name' })
-  lastName: string;
+  @ApiProperty({ example: 'John', description: 'Name' })
+  name: string;
 
   @ApiProperty({ example: 'student', description: 'Student' })
   @IsEnum(UserType)

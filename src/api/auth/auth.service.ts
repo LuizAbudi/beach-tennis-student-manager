@@ -12,9 +12,6 @@ import { User } from 'src/entities/users/user.entity';
 import { Student } from 'src/entities/students/student.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
-import { PaymentService } from '../payment/payment.service';
-import { PaymentStatus } from 'src/enums';
-import { Payment } from 'src/entities/payment/payment.entity';
 
 @Injectable()
 export class AuthService {
@@ -25,32 +22,18 @@ export class AuthService {
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(Teacher)
     private readonly teacherRepository: Repository<Teacher>,
-    @InjectRepository(Payment)
-    private readonly paymentRepository: Repository<Payment>,
     private usersService: UsersService,
-    private paymentsService: PaymentService,
     private jwtService: JwtService,
   ) {}
 
   async register(createUserIn: CreateUserDto): Promise<User> {
-    const {
-      email,
-      firstName,
-      lastName,
-      userType,
-      password,
-      level,
-      paymentDate,
-      paymentValue,
-      teacherId,
-      lastPaymentDate,
-    } = createUserIn;
+    const { email, name, userType, password, level, paymentDate, teacherId } =
+      createUserIn;
     const hashedPassword = hashPassword(password);
 
     const user = await this.usersRepository.save({
       email,
-      firstName,
-      lastName,
+      name,
       userType,
       password: hashedPassword,
     });
@@ -63,18 +46,10 @@ export class AuthService {
       const student = await this.studentRepository.save({
         user,
         level,
+        paymentDate,
         teacher,
       });
 
-      const payment = await this.paymentRepository.save({
-        student: student,
-        paymentDate,
-        paymentValue,
-        paymentStatus: PaymentStatus.PENDING,
-        lastPaymentDate: lastPaymentDate ?? null,
-      });
-
-      student.payment = payment;
       await this.studentRepository.save(student);
     } else {
       await this.teacherRepository.save({ user });
@@ -92,20 +67,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    if (user.userType === 'student') {
-      const student = await this.studentRepository.findOne({ where: { user } });
-      if (student) {
-        await this.paymentsService.updatePaymentStatus(
-          student.id,
-          PaymentStatus.PAID,
-        );
-      }
-    }
-
     const payload = {
       sub: user.id,
       email: user.email,
       userType: user.userType,
+      name: user.name,
     };
 
     return { access_token: await this.jwtService.signAsync(payload) };
