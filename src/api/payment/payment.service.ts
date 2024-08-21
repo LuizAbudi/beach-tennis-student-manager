@@ -98,7 +98,7 @@ export class PaymentService {
 
     if (user.userType === 'student') {
       query.andWhere('payment.studentId = :studentId', { studentId: userId });
-    } else if (user.userType === 'teacher') {
+    } else {
       const validStudent = await this.usersRepository.findOneBy({
         id: studentId,
       });
@@ -107,7 +107,9 @@ export class PaymentService {
         throw new NotFoundException(`Student with id ${studentId} not found`);
       }
 
-      query.andWhere('payment.studentId = :studentId', { studentId });
+      if (studentId) {
+        query.andWhere('payment.studentId = :studentId', { studentId });
+      }
     }
 
     if (status) {
