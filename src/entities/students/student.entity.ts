@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToOne,
   JoinColumn,
   ManyToMany,
   JoinTable,
@@ -22,7 +21,7 @@ export class Student {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.student)
+  @ManyToOne(() => User, (user) => user.student, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
@@ -35,8 +34,8 @@ export class Student {
   @Column({ default: 1 })
   paymentDay: number;
 
-  @OneToOne(() => Payment, (payment) => payment.student)
-  payment: Payment;
+  @ManyToMany(() => Payment, (payment) => payment.student)
+  payment: Payment[];
 
   @ApiProperty({ example: '1', description: 'Teacher ID' })
   @ManyToOne(() => Teacher, (teacher) => teacher.students)
