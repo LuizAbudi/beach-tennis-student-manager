@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { Student } from 'src/entities/students/student.entity';
 import { QueryParamsDto } from './dto/query-params.dto';
+import { User } from 'src/entities/users/user.entity';
 
 @Injectable()
 export class PaymentService {
@@ -14,6 +15,8 @@ export class PaymentService {
     private readonly paymentRepository: Repository<Payment>,
     @InjectRepository(Student)
     private studentsRepository: Repository<Student>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async createPayment(
@@ -23,7 +26,7 @@ export class PaymentService {
     const student = await this.studentsRepository.findOneBy({ id: studentId });
 
     if (!student) {
-      throw new Error('Student not found');
+      throw new NotFoundException(`Student with id ${studentId} not found`);
     }
 
     const payment = this.paymentRepository.create({
@@ -80,10 +83,32 @@ export class PaymentService {
 
   async getAllPayments(
     allQueries: QueryParamsDto,
+    userId: number,
   ): Promise<{ items: Payment[]; total: number }> {
-    const { page, limit, status, startDate, endDate, order } = allQueries;
+    const { page, limit, status, startDate, endDate, order, studentId } =
+      allQueries;
+
+    const user = await this.usersRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
 
     const query = this.paymentRepository.createQueryBuilder('payment');
+
+    if (user.userType === 'student') {
+      query.andWhere('payment.studentId = :studentId', { studentId: userId });
+    } else if (user.userType === 'teacher') {
+      const validStudent = await this.usersRepository.findOneBy({
+        id: studentId,
+      });
+
+      if (!validStudent) {
+        throw new NotFoundException(`Student with id ${studentId} not found`);
+      }
+
+      query.andWhere('payment.studentId = :studentId', { studentId });
+    }
 
     if (status) {
       query.andWhere('payment.paymentStatus = :status', { status });
@@ -104,10 +129,8 @@ export class PaymentService {
       query.orderBy('payment.paymentDate', order);
     }
 
-    // Calculate offset and limit
     const offset = (page - 1) * limit;
 
-    // Get the total count of records
     const [items, total] = await query
       .skip(offset)
       .take(limit)

@@ -57,4 +57,13 @@ export class QueryParamsDto {
   })
   @IsOptional()
   order: 'ASC' | 'DESC' = 'ASC';
+
+  @ApiProperty({
+    description: 'Student ID',
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  studentId: number;
 }

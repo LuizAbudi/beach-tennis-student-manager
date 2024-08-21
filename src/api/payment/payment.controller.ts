@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   ValidationPipe,
+  Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
@@ -91,7 +92,9 @@ export class PaymentController {
   @Get()
   async getAllPayments(
     @Query(new ValidationPipe({ transform: true })) query: QueryParamsDto,
+    @Req() req,
   ): Promise<{ items: Payment[]; total: number }> {
-    return this.paymentService.getAllPayments(query);
+    const userId = req.user.id;
+    return this.paymentService.getAllPayments(query, userId);
   }
 }
