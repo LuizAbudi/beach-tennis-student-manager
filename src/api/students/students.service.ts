@@ -45,4 +45,16 @@ export class StudentsService {
 
     return studentsWithUser;
   }
+
+  async updateStudentPaymentDay(day: number, studentId: number) {
+    const student = await this.studentRepository.findOneBy({ id: studentId });
+    if (!student) {
+      throw new NotFoundException(`Student with id ${studentId} not found`);
+    }
+    student.paymentDay = day;
+    await this.studentRepository.save(student);
+    return {
+      message: `Student with id ${studentId} payment day updated successfully`,
+    };
+  }
 }

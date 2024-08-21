@@ -50,8 +50,12 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User Deletion Success' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Access Forbidden' })
-  remove(@Param('id') id: number): Promise<void> {
-    return this.usersService.remove(id);
+  deleteUser(
+    @Param('id') id: number,
+    @Request() req,
+  ): Promise<{ message: string }> {
+    const requestUserId = req.user.id;
+    return this.usersService.deleteUser(id, requestUserId);
   }
 
   @Put('update-status')

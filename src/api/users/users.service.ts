@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users/user.entity';
@@ -36,8 +40,35 @@ export class UsersService {
     return this.usersRepository.find({ where: { userType: UserType.STUDENT } });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  async deleteUser(
+    userId: number,
+    requestUserId: number,
+  ): Promise<{ message: string }> {
+    const userToDelete = await this.usersRepository.findOneBy({ id: userId });
+
+    if (!userToDelete) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    const requestingUser = await this.usersRepository.findOneBy({
+      id: requestUserId,
+    });
+
+    if (!requestingUser) {
+      throw new NotFoundException(
+        `Requesting user with ID ${requestUserId} not found`,
+      );
+    }
+
+    const isTeacher = Boolean(requestingUser.teacher);
+    const isSelf = userId === requestUserId;
+
+    if (!isTeacher && !isSelf) {
+      throw new ForbiddenException(`You are not allowed to delete this user`);
+    }
+
+    await this.usersRepository.delete(userId);
+    return { message: `User with ID ${userId} deleted successfully` };
   }
 
   async updateStatus(

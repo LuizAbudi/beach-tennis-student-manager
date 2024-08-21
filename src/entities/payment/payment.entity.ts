@@ -2,7 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { Student } from '../students/student.entity';
@@ -18,11 +18,13 @@ export class Payment {
   @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
   paymentStatus: PaymentStatus;
 
-  @ApiProperty({ example: '2024-01-01', description: 'Last payment date' })
+  @ApiProperty({ example: '2024-01-01', description: 'Payment date' })
   @Column({ type: 'date', nullable: true })
   paymentDate: Date | null;
 
-  @OneToOne(() => Student, (student) => student.payment)
+  @ManyToOne(() => Student, (student) => student.payments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'studentId' })
   student: Student;
 }
