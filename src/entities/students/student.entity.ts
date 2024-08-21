@@ -2,6 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   ManyToOne,
   JoinColumn,
   ManyToMany,
@@ -34,8 +35,8 @@ export class Student {
   @Column({ default: 1 })
   paymentDay: number;
 
-  @ManyToMany(() => Payment, (payment) => payment.student)
-  payment: Payment[];
+  @OneToMany(() => Payment, (payment) => payment.student)
+  payments: Payment[];
 
   @ApiProperty({ example: '1', description: 'Teacher ID' })
   @ManyToOne(() => Teacher, (teacher) => teacher.students)
