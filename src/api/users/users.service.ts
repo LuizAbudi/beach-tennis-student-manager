@@ -22,7 +22,13 @@ export class UsersService {
   async findOne(email: string): Promise<User> {
     return await this.usersRepository
       .createQueryBuilder('user')
-      .select(['user.email', 'user.id', 'user.userType', 'user.name'])
+      .select([
+        'user.email',
+        'user.id',
+        'user.userType',
+        'user.name',
+        'user.userType',
+      ])
       .addSelect('user.password')
       .where('user.email = :email', { email })
       .getOne();
