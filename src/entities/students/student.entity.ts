@@ -43,7 +43,7 @@ export class Student {
   @JoinColumn({ name: 'teacherId' })
   teacher: Teacher;
 
-  @ManyToMany(() => Class)
+  @ManyToMany(() => Class, (classEntity) => classEntity.students)
   @JoinTable()
   classes: Class[];
 
