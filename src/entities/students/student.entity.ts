@@ -6,7 +6,6 @@ import {
   ManyToOne,
   JoinColumn,
   ManyToMany,
-  JoinTable,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -44,7 +43,6 @@ export class Student {
   teacher: Teacher;
 
   @ManyToMany(() => Class, (classEntity) => classEntity.students)
-  @JoinTable()
   classes: Class[];
 
   @ManyToOne(

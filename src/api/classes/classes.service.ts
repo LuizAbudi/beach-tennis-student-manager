@@ -62,7 +62,10 @@ export class ClassesService {
       );
     }
 
-    // Check if the teacher already has a class at the same time
+    if (studentIds.length > 4) {
+      throw new BadRequestException('A class can have at most 4 students.');
+    }
+
     const existingTeacherClass = await this.classRepository.findOne({
       where: {
         teacher: teacher,
@@ -78,20 +81,19 @@ export class ClassesService {
       );
     }
 
-    // Check if any of the students are already enrolled in another class at the same time
     const existingStudentClasses = await this.classRepository.find({
       where: {
         classDay: classDay,
         startTime: startTime,
         endTime: endTime,
-        students: In(studentIds),
       },
       relations: ['students'],
     });
 
-    const conflictingStudentIds = existingStudentClasses.flatMap((c) =>
-      c.students.map((s) => s.id),
-    );
+    const conflictingStudentIds = existingStudentClasses
+      .flatMap((c) => c.students)
+      .filter((student) => studentIds.includes(student.id))
+      .map((s) => s.id);
 
     if (conflictingStudentIds.length > 0) {
       throw new BadRequestException(
@@ -154,7 +156,6 @@ export class ClassesService {
       );
     }
 
-    // Check if the teacher already has a class at the same time, excluding the current class
     const existingTeacherClass = await this.classRepository.findOne({
       where: {
         teacher: teacher,
@@ -171,21 +172,20 @@ export class ClassesService {
       );
     }
 
-    // Check if any of the students are already enrolled in another class at the same time, excluding the current class
     const existingStudentClasses = await this.classRepository.find({
       where: {
         classDay: classDay,
         startTime: startTime,
         endTime: endTime,
-        students: In(studentIds),
         id: Not(classId),
       },
       relations: ['students'],
     });
 
-    const conflictingStudentIds = existingStudentClasses.flatMap((c) =>
-      c.students.map((s) => s.id),
-    );
+    const conflictingStudentIds = existingStudentClasses
+      .flatMap((c) => c.students)
+      .filter((student) => studentIds.includes(student.id))
+      .map((s) => s.id);
 
     if (conflictingStudentIds.length > 0) {
       throw new BadRequestException(
