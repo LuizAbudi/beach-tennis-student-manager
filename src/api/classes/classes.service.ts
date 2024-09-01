@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Class } from 'src/entities/class/classes.entity';
 import { In, Not, Repository } from 'typeorm';
 import { CreateClassDto } from './dto/create-classes.dto';
+import { UpdateClassDto } from './dto/update-classes.dto';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 import { Student } from 'src/entities/students/student.entity';
 
@@ -116,7 +117,7 @@ export class ClassesService {
 
   async updateClass(
     classId: number,
-    updateClassDto: CreateClassDto,
+    updateClassDto: UpdateClassDto,
   ): Promise<Class> {
     const { classDay, startTime, endTime, teacherId, studentIds } =
       updateClassDto;
