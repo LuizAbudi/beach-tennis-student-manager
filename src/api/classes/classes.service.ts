@@ -26,11 +26,31 @@ export class ClassesService {
     return this.classRepository.find({ relations: ['students'] });
   }
 
-  async getClassById(classId: number): Promise<Class> {
-    return this.classRepository.findOne({
+  async getClassById(classId: number): Promise<any> {
+    const classEntity = await this.classRepository.findOne({
       where: { id: classId },
-      relations: ['students'],
+      relations: ['teacher', 'teacher.user', 'students', 'students.user'],
     });
+
+    if (!classEntity) {
+      throw new NotFoundException(`Class with id ${classId} not found`);
+    }
+
+    return {
+      id: classEntity.id,
+      classDay: classEntity.classDay,
+      startTime: classEntity.startTime,
+      endTime: classEntity.endTime,
+      teacher: {
+        id: classEntity.teacher.id,
+        name: classEntity.teacher.user.name,
+      },
+      students: classEntity.students.map((student) => ({
+        id: student.id,
+        name: student.user.name,
+        level: student.level,
+      })),
+    };
   }
 
   async createClass(createClassDto: CreateClassDto): Promise<Class> {

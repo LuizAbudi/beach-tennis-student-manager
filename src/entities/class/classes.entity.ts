@@ -36,10 +36,10 @@ export class Class {
   })
   endTime: string;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.classes)
+  @ManyToOne(() => Teacher, (teacher) => teacher.classes, { eager: false })
   teacher: Teacher;
 
-  @ManyToMany(() => Student, (student) => student.classes)
+  @ManyToMany(() => Student, (student) => student.classes, { eager: false })
   @JoinTable()
   students: Student[];
 }
