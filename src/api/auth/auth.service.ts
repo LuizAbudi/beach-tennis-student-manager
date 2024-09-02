@@ -68,34 +68,32 @@ export class AuthService {
     }
 
     let payload;
-    
+
     if (user.userType === 'teacher') {
       const teacher = await this.teacherRepository.findOne({
         where: { user: { id: user.id } },
       });
       if (!teacher) {
-        throw new NotFoundException
-    } else{
-       payload = {
+        throw new NotFoundException();
+      } else {
+        payload = {
+          sub: user.id,
+          email: user.email,
+          id: user.id,
+          userType: user.userType,
+          name: user.name,
+          teacherId: teacher.id,
+        };
+      }
+    } else {
+      payload = {
         sub: user.id,
         email: user.email,
         id: user.id,
         userType: user.userType,
         name: user.name,
-        teacherId: teacher.id,
       };
     }
-
-  } else{
-     payload = {
-      sub: user.id,
-      email: user.email,
-      id: user.id,
-      userType: user.userType,
-      name: user.name,
-    };
-  }
-
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }

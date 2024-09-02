@@ -23,7 +23,9 @@ export class ClassesService {
   ) {}
 
   async getClasses(): Promise<Class[]> {
-    return this.classRepository.find({ relations: ['students'] });
+    return this.classRepository.find({
+      relations: ['students', 'teacher', 'teacher.user'],
+    });
   }
 
   async getClassById(classId: number): Promise<any> {
@@ -41,10 +43,7 @@ export class ClassesService {
       classDay: classEntity.classDay,
       startTime: classEntity.startTime,
       endTime: classEntity.endTime,
-      teacher: {
-        id: classEntity.teacher.id,
-        name: classEntity.teacher.user.name,
-      },
+      teacher: classEntity.teacher,
       students: classEntity.students.map((student) => ({
         id: student.id,
         name: student.user.name,
