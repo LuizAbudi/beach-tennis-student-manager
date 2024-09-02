@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from 'src/entities/students/student.entity';
 import { User } from 'src/entities/users/user.entity';
 import { LevelNames } from 'src/enums';
+import { StudentsProfileSchema } from 'src/schemas/students/students.schema';
 
 @Injectable()
 export class StudentsService {
@@ -56,5 +57,22 @@ export class StudentsService {
     return {
       message: `Student with id ${studentId} payment day updated successfully`,
     };
+  }
+
+  async getMyStudents(teacherId: number): Promise<StudentsProfileSchema[]> {
+    try {
+      const students = await this.studentRepository.find({
+        where: { teacher: { id: teacherId } },
+        relations: ['user'],
+      });
+  
+      if (!students.length) {
+        throw new NotFoundException('No students found for this teacher');
+      }
+  
+      return students;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get students', error.message);
+    }
   }
 }

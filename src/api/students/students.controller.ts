@@ -5,6 +5,7 @@ import {
   Param,
   NotFoundException,
   Get,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOAuth2, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
@@ -69,4 +70,16 @@ export class StudentsController {
     }
     return { message: 'Student Payment Day Updated' };
   }
+  @Get('my-students/:teacherId')
+  @ApiOperation({ summary: 'Get all students that teacher have' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of students retrieved successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Students not found' })
+  @ApiResponse({ status: 401, description: 'Access Forbidden' })
+  async getMyStudents(@Param('teacherId', ParseIntPipe) teacherId: number): Promise<StudentsProfileSchema[]> {
+    return this.studentsService.getMyStudents(teacherId);
+  }
+
 }
