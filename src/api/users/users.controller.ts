@@ -24,7 +24,7 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Access Forbidden' })
   @ApiOperation({ summary: 'Get User Me' })
   getProfile(@Request() req) {
-    return this.usersService.findById(req.user.sub);
+    return this.usersService.findById(req.user.id);
   }
 
   @Get('all')

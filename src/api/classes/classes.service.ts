@@ -22,9 +22,10 @@ export class ClassesService {
     private studentRepository: Repository<Student>,
   ) {}
 
-  async getClasses(): Promise<Class[]> {
+  async getClasses(teacherId: number): Promise<Class[]> {
     return this.classRepository.find({
       relations: ['students', 'teacher', 'teacher.user'],
+      where: { teacher: { id: teacherId } },
     });
   }
 

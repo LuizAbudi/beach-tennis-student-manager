@@ -3,10 +3,11 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-classes.dto';
 
@@ -27,13 +28,18 @@ export class ClassesController {
     }
   }
 
-  @Get()
+  @Get('/:teacherId')
   @ApiOperation({ summary: 'Get all classes' })
   @ApiResponse({ status: 200, description: 'Classes retrieved' })
   @ApiResponse({ status: 404, description: 'Classes not retrieved' })
-  async getClasses() {
+  @ApiParam({
+    name: 'teacherId',
+    description: 'Id do professor',
+    required: true,
+  })
+  async getClasses(@Param('teacherId') teacherId: number) {
     try {
-      return await this.classesService.getClasses();
+      return await this.classesService.getClasses(teacherId);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
