@@ -13,6 +13,14 @@ import { Student } from 'src/entities/students/student.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Teacher } from 'src/entities/teachers/teacher.entity';
 
+interface ITokenPayload {
+  id: number;
+  email: string;
+  userType: string;
+  name: string;
+  teacherId: number;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -67,7 +75,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    let payload;
+    let payload: ITokenPayload;
 
     if (user.userType === 'teacher') {
       const teacher = await this.teacherRepository.findOne({
@@ -77,7 +85,6 @@ export class AuthService {
         throw new NotFoundException();
       } else {
         payload = {
-          sub: user.id,
           email: user.email,
           id: user.id,
           userType: user.userType,
@@ -86,13 +93,22 @@ export class AuthService {
         };
       }
     } else {
-      payload = {
-        sub: user.id,
-        email: user.email,
-        id: user.id,
-        userType: user.userType,
-        name: user.name,
-      };
+      const student: Student = await this.studentRepository.findOne({
+        where: { user: { id: user.id } },
+        relations: ['teacher'],
+      });
+
+      if (!student) {
+        throw new NotFoundException();
+      } else {
+        payload = {
+          email: user.email,
+          id: user.id,
+          userType: user.userType,
+          name: user.name,
+          teacherId: student.teacher.id,
+        };
+      }
     }
 
     return { access_token: await this.jwtService.signAsync(payload) };
