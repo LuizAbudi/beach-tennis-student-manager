@@ -19,6 +19,7 @@ interface ITokenPayload {
   userType: string;
   name: string;
   teacherId: number;
+  studentId?: number;
 }
 
 @Injectable()
@@ -74,9 +75,9 @@ export class AuthService {
     if (!comparePassword(password, user.password)) {
       throw new UnauthorizedException();
     }
-
+  
     let payload: ITokenPayload;
-
+  
     if (user.userType === 'teacher') {
       const teacher = await this.teacherRepository.findOne({
         where: { user: { id: user.id } },
@@ -93,11 +94,11 @@ export class AuthService {
         };
       }
     } else {
-      const student: Student = await this.studentRepository.findOne({
+      const student = await this.studentRepository.findOne({
         where: { user: { id: user.id } },
         relations: ['teacher'],
       });
-
+  
       if (!student) {
         throw new NotFoundException();
       } else {
@@ -107,10 +108,11 @@ export class AuthService {
           userType: user.userType,
           name: user.name,
           teacherId: student.teacher.id,
+          studentId: student.id, // Adiciona o studentId ao payload
         };
       }
     }
-
+  
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
