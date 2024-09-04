@@ -29,6 +29,21 @@ export class ClassesService {
     });
   }
 
+  async getClassesByStudent(studentId: number): Promise<Class[]> {
+    const classes = await this.classRepository
+      .createQueryBuilder('class')
+      .leftJoinAndSelect('class.students', 'student')
+      .leftJoinAndSelect('class.teacher', 'teacher')
+      .leftJoinAndSelect('teacher.user', 'user')
+      .where('student.id = :studentId', { studentId })
+      .getMany();
+  
+    if (!classes.length) {
+      throw new NotFoundException('No classes found for the given student');
+    }
+    return classes;
+  }  
+
   async getClassById(classId: number): Promise<any> {
     const classEntity = await this.classRepository.findOne({
       where: { id: classId },

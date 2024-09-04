@@ -28,7 +28,7 @@ export class ClassesController {
     }
   }
 
-  @Get('/:teacherId')
+  @Get('/teacher/:teacherId')
   @ApiOperation({ summary: 'Get all classes' })
   @ApiResponse({ status: 200, description: 'Classes retrieved' })
   @ApiResponse({ status: 404, description: 'Classes not retrieved' })
@@ -40,6 +40,19 @@ export class ClassesController {
   async getClasses(@Param('teacherId') teacherId: number) {
     try {
       return await this.classesService.getClasses(teacherId);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get('/student/:studentId')
+  @ApiOperation({ summary: 'Get all classes for a student' })
+  @ApiResponse({ status: 200, description: 'Classes retrieved' })
+  @ApiResponse({ status: 404, description: 'Classes not retrieved' })
+  @ApiParam({ name: 'studentId', description: 'Id do estudante', required: true })
+  async getClassesByStudent(@Param('studentId') studentId: number) {
+    try {
+      return await this.classesService.getClassesByStudent(studentId);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
